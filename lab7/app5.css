@@ -1,0 +1,38 @@
+.app {
+  width: 300px;
+  min-height: 200px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 30px;
+}
+
+.counter {
+  font-size: 24px;
+  margin-bottom: 35px;
+}
+
+.button-section {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+button {
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.increment {
+  background-color: green;
+}
+
+.decrement {
+  background-color: red;
+}
