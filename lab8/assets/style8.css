@@ -1,0 +1,133 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+    color: #333;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+
+header {
+    background-color: #1e3a8a;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+header h1 {
+    margin-bottom: 15px;
+}
+
+/* Navigation */
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #bfdbfe;
+}
+
+/* Main */
+
+main {
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px 20px;
+}
+
+/* Cards */
+
+.hero,
+.about {
+    background-color: white;
+
+    width: 90%;
+    max-width: 700px;
+
+    padding: 45px;
+
+    border-radius: 15px;
+
+    text-align: center;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hero h2,
+.about h2 {
+    color: #1e3a8a;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.hero p,
+.about p {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* List */
+
+.about ul {
+    display: inline-block;
+
+    text-align: left;
+
+    margin: 15px 0 25px;
+}
+
+.about li {
+    margin: 8px 0;
+    font-size: 17px;
+}
+
+/* Button */
+
+.button {
+    display: inline-block;
+
+    background-color: #2563eb;
+    color: white;
+
+    text-decoration: none;
+
+    padding: 12px 25px;
+
+    margin-top: 15px;
+
+    border-radius: 7px;
+}
+
+.button:hover {
+    background-color: #1d4ed8;
+}
+
+/* Footer */
+
+footer {
+    background-color: #172554;
+    color: white;
+
+    text-align: center;
+
+    padding: 15px;
+}
