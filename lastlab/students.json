@@ -1,0 +1,34 @@
+[
+  {
+    "id": "101",
+    "name": "Aarav Sharma",
+    "email": "aarav.sharma@example.edu",
+    "department": "Computer Science",
+    "semester": 6,
+    "cgpa": "8.9"
+  },
+  {
+    "id": "102",
+    "name": "Diya Patel",
+    "email": "diya.patel@example.edu",
+    "department": "Information Science",
+    "semester": 4,
+    "cgpa": "9.2"
+  },
+  {
+    "id": "103",
+    "name": "Rohan Verma",
+    "email": "rohan.v@example.edu",
+    "department": "Electronics",
+    "semester": 6,
+    "cgpa": "8.4"
+  },
+  {
+    "id": "109",
+    "name": "likitha innamuri",
+    "email": "likithainnamuri@gmail.com",
+    "department": "Computer Science",
+    "semester": 6,
+    "cgpa": "9.02"
+  }
+]

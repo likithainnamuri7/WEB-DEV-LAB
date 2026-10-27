@@ -1,0 +1,20 @@
+{
+  "name": "student-information-web-server",
+  "version": "1.0.0",
+  "description": "Student Information Web Server using Node.js core modules: http, fs, and url",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node run-verification.js"
+  },
+  "keywords": [
+    "nodejs",
+    "http",
+    "fs",
+    "url",
+    "webtech",
+    "lab"
+  ],
+  "author": "",
+  "license": "ISC"
+}

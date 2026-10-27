@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Information System - Node.js Core Modules</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Student Information Web Server</h1>
+      <p>Demonstrating Node.js built-in core modules: <strong>http</strong>, <strong>fs</strong>, and <strong>url</strong></p>
+      <div class="modules-banner">
+        <span class="module-pill">🌐 http.createServer &amp; Routing</span>
+        <span class="module-pill">📁 fs.readFile, fs.writeFile &amp; fs.appendFile</span>
+        <span class="module-pill">🔗 url.parse &amp; Query Params</span>
+      </div>
+    </header>
+
+    <div id="statusMessage" class="status-msg"></div>
+
+    <div class="grid-layout">
+      <!-- Add Student Form -->
+      <section class="card">
+        <h2>Add New Student</h2>
+        <form id="studentForm" action="/add-student" method="POST">
+          <div class="form-group">
+            <label for="id">Student ID / USN</label>
+            <input type="text" id="id" name="id" placeholder="e.g. 104 or 1MS21CS001" required>
+          </div>
+
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Ananya Rao" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="e.g. ananya@example.edu" required>
+          </div>
+
+          <div class="form-group">
+            <label for="department">Department</label>
+            <select id="department" name="department" required>
+              <option value="">Select Department</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Information Science">Information Science</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Mechanical">Mechanical</option>
+              <option value="Civil">Civil</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="semester">Semester</label>
+            <input type="number" id="semester" name="semester" min="1" max="8" value="6" required>
+          </div>
+
+          <div class="form-group">
+            <label for="cgpa">CGPA</label>
+            <input type="number" id="cgpa" name="cgpa" step="0.01" min="0" max="10" placeholder="e.g. 9.1" required>
+          </div>
+
+          <button type="submit" class="btn">Save Student Record</button>
+        </form>
+      </section>
+
+      <!-- Student Records & Query Filter -->
+      <section class="card">
+        <h2>Student Records Directory</h2>
+
+        <div class="filter-bar">
+          <input type="text" id="searchInput" placeholder="Search by ID, Name or Department...">
+          <button type="button" class="btn" style="width: auto;" id="refreshBtn">Refresh</button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Sem</th>
+                <th>CGPA</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; color: #64748b;">Loading students...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Quick API & URL Demonstrator Links -->
+    <div class="links-card">
+      <div>
+        <strong>Demonstration Links (Core Module Endpoints):</strong>
+      </div>
+      <div>
+        <a href="/api/students" target="_blank">📄 All Students (JSON)</a> &bull;
+        <a href="/api/students?department=Computer%20Science" target="_blank">🔍 Filter by Dept (URL Query)</a> &bull;
+        <a href="/api/student?id=101" target="_blank">🎯 Search by ID (URL Query)</a> &bull;
+        <a href="/logs" target="_blank">📜 Access Log (fs.appendFile)</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('studentForm');
+    const tableBody = document.getElementById('studentTableBody');
+    const searchInput = document.getElementById('searchInput');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const statusMsg = document.getElementById('statusMessage');
+
+    function showMessage(text, type = 'success') {
+      statusMsg.className = `status-msg ${type}`;
+      statusMsg.textContent = text;
+      statusMsg.style.display = 'block';
+      setTimeout(() => {
+        statusMsg.style.display = 'none';
+      }, 4000);
+    }
+
+    async function loadStudents(query = '') {
+      try {
+        let endpoint = '/api/students';
+        if (query) {
+          endpoint += `?search=${encodeURIComponent(query)}`;
+        }
+        const res = await fetch(endpoint);
+        if (!res.ok) throw new Error('Failed to load students');
+        const students = await res.json();
+
+        if (students.length === 0) {
+          tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748b;">No student records found.</td></tr>';
+          return;
+        }
+
+        tableBody.innerHTML = students.map(s => `
+          <tr>
+            <td><strong>${escapeHtml(s.id)}</strong></td>
+            <td>${escapeHtml(s.name)}</td>
+            <td>${escapeHtml(s.email)}</td>
+            <td><span class="badge">${escapeHtml(s.department)}</span></td>
+            <td>${escapeHtml(String(s.semester || '-'))}</td>
+            <td>${escapeHtml(String(s.cgpa || '-'))}</td>
+            <td>
+              <button class="btn btn-danger" onclick="deleteStudent('${escapeHtml(s.id)}')">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #ef4444;">Error loading data: ${escapeHtml(err.message)}</td></tr>`;
+      }
+    }
+
+    async function deleteStudent(id) {
+      if (!confirm(`Are you sure you want to delete student with ID: ${id}?`)) return;
+      try {
+        const res = await fetch(`/delete-student?id=${encodeURIComponent(id)}`, {
+          method: 'DELETE'
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showMessage(data.message || 'Student deleted successfully');
+          loadStudents(searchInput.value.trim());
+        } else {
+          showMessage(data.error || 'Failed to delete student', 'error');
+        }
+      } catch (err) {
+        showMessage(err.message, 'error');
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const studentData = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('/add-student', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(studentData)
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          showMessage(result.message || 'Student added successfully!');
+          form.reset();
+          loadStudents();
+        } else {
+          showMessage(result.error || 'Failed to add student.', 'error');
+        }
+      } catch (err) {
+        showMessage(err.message, 'error');
+      }
+    });
+
+    let debounceTimer;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        loadStudents(searchInput.value.trim());
+      }, 300);
+    });
+
+    refreshBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      loadStudents();
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Initial load
+    loadStudents();
+  </script>
+</body>
+</html>
